@@ -69,6 +69,7 @@ int FIFO::readBuffer(){
 
   reader++;
   reader%=FIFO_SIZE;
+  //Serial.println(reader);
   return data;
 
   }

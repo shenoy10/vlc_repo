@@ -1,14 +1,24 @@
 #include "VLCtransmitter.h"
 #include "FIFO.h"
 #include <TimerOne.h>
-#define MESSAGE_LENGTH 16  //2 times actual message length
+//#define MESSAGE_LENGTH 16  //2 times actual message length
+//#define MESSAGE_LENGTH 256
+//#define MESSAGE_LENGTH 32
+//#define MESSAGE_LENGTH 64
+//#define MESSAGE_LENGTH 128
+//#define MESSAGE_LENGTH 256
+//#define MESSAGE_LENGTH 20
+#define MESSAGE_LENGTH 20
 int transmitterPin = 2;
 int on= B00000100;
 int off= B11111011;
 VLCtransmitter transmitter = VLCtransmitter(transmitterPin);
 
-
-#define SYMBOL_PERIOD 900 /* Defined a symbol period in us*/
+//900 for 8 bits
+//600 for 16 bits
+//300 for 32 bits
+//200 for 64 bits
+#define SYMBOL_PERIOD 5000 /* Defined a symbol period in us*/
 //500000 works
 int first_half=0;
 int preambleCount=0;
@@ -16,8 +26,39 @@ int messageCount=0;
 
 void setup() 
 {  transmitter.commBuff=FIFO();
-  transmitter.sendStringToReceiver("11010110");
+   //transmitter.sendStringToReceiver("");
+   /*new*/
+   String ma="10011001";
+   String me="10111101";
+   String message="";
+
+   for(int i=0; i<16; i++){
+    message+=ma;
+   // message+=me;
+    }
+
+    //add the extra one's and zeroes
+   String final_message="1010101010";
+   int indexOrig=0;
+    for(int i=0; i<16; i++){
+      final_message+=1;
+      int indexfin=indexOrig+8;
+      while(indexfin>indexOrig){
+        final_message+=message[indexOrig];
+        indexOrig++;
+        }
+       final_message+=0;
+    }
+  
+    //last piece of first preamble
+    //String message_pream="1010101010";
+    //final_message=message_pream.concat(final_message);
+   transmitter.sendStringToReceiver(final_message);
+   //transmitter.sendStringToReceiver(ma);
+  //transmitter.sendStringToReceiver("10100100");
+   //new ends here
    Serial.begin(115200);
+   //Serial.println(final_message);
    cli();//stop interrupts
    Timer1.initialize(SYMBOL_PERIOD); //1200 bauds
    Timer1.attachInterrupt(emit_half_bit); 
@@ -27,7 +68,6 @@ void setup()
 
 void loop() 
 {
- 
 
 }
 

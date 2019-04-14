@@ -1,6 +1,6 @@
 #include "VLCreceiver.h"
 
-VLCreceiver::VLCreceiver(int pinVal)
+VLCreceiver::VLCreceiver(int pinVal)                                     //initialize preamble
 {
    this->preamble="123456";
    this->message="";
@@ -11,9 +11,8 @@ VLCreceiver::VLCreceiver(int pinVal)
 }
 
 
-VLCreceiver::checkPreamble(String pream){
+VLCreceiver::checkPreamble(String pream){                                 //set the preamble
   
   return this->preamble==pream;
   
   }
-

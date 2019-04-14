@@ -4,7 +4,7 @@
 
 #include "FIFO.h"
 
-FIFO::FIFO() {
+FIFO::FIFO() {                                                   //Initialize all variables
   head = 0;
   tail = 0;
   numElements = 0;
@@ -21,20 +21,17 @@ void FIFO::push(int data) {
     return;
   }
   else {
-    //Increment size
-    numElements++;
+    numElements++;                                                //Increment size
 
-    //Only move the tail if there is more than one element
-    if(numElements > 1) {
-      //Increment tail location
-      tail++;
+   
+    if(numElements > 1) {                                         //Only move the tail if there is more than one element
+      tail++;                                                     //Increment tail location
 
-      //Make sure tail is within the bounds of the array
-      tail %= FIFO_SIZE;
+      tail %= FIFO_SIZE;n                                         //Make sure tail is within the bounds of the array
+     
     }
   
-    //Store data into array
-    buff[tail] = data;
+   buff[tail] = data;                                             //Store data into array
   }
 }
 
@@ -49,11 +46,9 @@ int FIFO::pop() {
     int data = buff[head];
 
     if(numElements >= 1) {
-      //Move head up one position
-      head++;
-
-      //Make sure head is within the bounds of the array
-      head %= FIFO_SIZE;
+      head++;                                                      //Move head up one position
+      
+      head %= FIFO_SIZE;                                           //Make sure head is within the bounds of the array
     }
 
     return data;
@@ -68,8 +63,7 @@ int FIFO::readBuffer(){
   int data=buff[reader];
 
   reader++;
-  reader%=FIFO_SIZE;
+  reader%=FIFO_SIZE;                                              //reads the buffer by storing remainder into the reader
   return data;
 
   }
-

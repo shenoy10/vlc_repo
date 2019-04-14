@@ -8,20 +8,25 @@ int off= B11111011;
 VLCtransmitter transmitter = VLCtransmitter(transmitterPin);
 
 
-#define SYMBOL_PERIOD 900 /* Defined a symbol period in us*/
-//500000 works
+#define SYMBOL_PERIOD 200000 /* Defined a symbol period in us*/
 int first_half=0;
 int preambleCount=0;
 int messageCount=0;
 
 void setup() 
 {  transmitter.commBuff=FIFO();
+String ma="";
+String message="11010110";
+for(int i=0; i<2; i++){
+  ma+=message;
+  }
+  
   transmitter.sendStringToReceiver("11010110");
    Serial.begin(115200);
-   cli();//stop interrupts
-   Timer1.initialize(SYMBOL_PERIOD); //1200 bauds
+   cli();                                                               //stop interrupts
+   Timer1.initialize(SYMBOL_PERIOD);                                    //1200 bauds
    Timer1.attachInterrupt(emit_half_bit); 
-   sei();//allow interrupts
+   sei();                                                               //allow interrupts
    
 }
 
@@ -34,9 +39,6 @@ void loop()
 
 void emit_half_bit(){
   if(preambleCount<6){
-     //Serial.println("preamble");
-     //Serial.println(transmitter.commBuff.sizeOfBuffer());
-     // PORTD|=on;
      PORTD&=off;
       preambleCount++;
     
@@ -44,24 +46,19 @@ void emit_half_bit(){
   else{
      messageCount++;
      if(transmitter.commBuff.sizeOfBuffer()!=0){
-       //Serial.println(transmitter.commBuff.sizeOfBuffer()); 
-        //send the half bits based on light signal
-        int halfbit=transmitter.commBuff.readBuffer();
-       // Serial.println(transmitter.commBuff.size());
-       //Serial.println(halfbit);
+        int halfbit=transmitter.commBuff.readBuffer();                   //send the half bits based on light signal
+        
         if(halfbit==1 ){      
-            //PORTD|=on;
              PORTD&=off;
         }
         else{
-          //PORTD&=off;
           PORTD|=on;
         }
         
      }
      else{
-        //consistently send high
-        //digitalWrite(transmitterPin,HIGH);
+                                                                         //consistently send high
+       
       }
       if(messageCount==MESSAGE_LENGTH){
         preambleCount=0;
